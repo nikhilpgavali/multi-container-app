@@ -1,6 +1,4 @@
-import { IsNotEmpty, IsString, IsNumber, Validate } from 'class-validator';
-import { EmailExists } from './services/email-exists-validation.service';
-import { EmailValidation } from './services/email-validation.service';
+import { IsNotEmpty, IsString, IsNumber } from 'class-validator';
 
 export class StudentDto {
   @IsNotEmpty()
@@ -20,7 +18,7 @@ export class StudentDto {
   roll_number: number;
 
   @IsNotEmpty()
-  @Validate(EmailValidation)
-  @Validate(EmailExists)
+  // @Validate(EmailValidation)
+  // @Validate(EmailExists)
   email: string;
 }

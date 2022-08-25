@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  pull_request:
+    branches:
+      - develop
+      - stage
+      - preprod
+      - master
+
+jobs:
+  code-quality:
+    name: Code Quality
+    runs-on: ubuntu-latest
+
+     strategy:
+      matrix:
+        node-version: [14.x]
+
+    steps:
+      - uses: actions/checkout/checkout@v2
+
+      - name: Use Node.js ${{ matrix.node-version }}
+      - uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-${{matrix.node-version}}-${{ hasFiles('**/package.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-${{matrix.node-version}}
+      - name: Install NPM Dependencies
+        run: npm ci
+      
+      - name: Lint
+        run: npm un lint
+
+      - name: Build
+        run: npm run build
+
+      - name: Test
+        timeout-minutes: 10
+        run: npm run test:ci:cov
+        

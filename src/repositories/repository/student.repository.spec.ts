@@ -5,21 +5,21 @@ import { StudentRepository } from './student.repository';
 describe('Student Repository', () => {
   let readEntityManager;
   let writeEntityManager;
-  let email = 'abc@gmail.com';
+  const email = 'abc@gmail.com';
   beforeEach(() => {
     readEntityManager = mock<EntityManager>({});
     writeEntityManager = mock<EntityManager>({});
   });
   describe('findByEmail', () => {
     it('should call repository method correctly', async () => {
-      let studentDetailsMock = {
+      const studentDetailsMock = {
         first_name: 'abc',
         last_name: 'pqr',
         age: 25,
         roll_number: 25,
         email: 'abc@xyz.com',
       };
-      let queryBuilderMock = {
+      const queryBuilderMock = {
         select: jest.fn().mockReturnThis(),
         where: jest.fn().mockReturnThis(),
         getOne: jest.fn().mockResolvedValue(studentDetailsMock),
@@ -29,8 +29,8 @@ describe('Student Repository', () => {
           .fn()
           .mockImplementation(() => queryBuilderMock),
       });
-      let studentRepository = new StudentRepository(readEntityManager);
-      let result = await studentRepository.findByEmail(email);
+      const studentRepository = new StudentRepository(readEntityManager);
+      const result = await studentRepository.findByEmail(email);
       expect(result).toEqual(studentDetailsMock);
       expect(queryBuilderMock.select).toHaveBeenCalledWith('student');
       expect(queryBuilderMock.select).toHaveBeenCalledTimes(1);
@@ -39,6 +39,36 @@ describe('Student Repository', () => {
       });
       expect(queryBuilderMock.where).toHaveBeenCalledTimes(1);
       expect(queryBuilderMock.getOne).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('create', () => {
+    it('should call the repository method correctly', async () => {
+      const studentDetailsMock = {
+        first_name: 'abc',
+        last_name: 'pqr',
+        age: 25,
+        roll_number: 25,
+        email: 'abc@xyz.com',
+      };
+
+      const expectedData = {
+        id: '1',
+        first_name: 'abc',
+        last_name: 'pqr',
+        age: 25,
+        roll_number: 25,
+        email: 'abc@xyz.com',
+      };
+
+      writeEntityManager = mock<EntityManager>({
+        save: jest.fn().mockResolvedValue(expectedData),
+      });
+      const studentRepository = new StudentRepository(writeEntityManager);
+      const result = await studentRepository.create(studentDetailsMock);
+      expect(result).toEqual(expectedData);
+      expect(writeEntityManager.save).toHaveBeenCalledTimes(1);
+      expect(writeEntityManager.save).toHaveBeenCalledWith(studentDetailsMock);
     });
   });
 });

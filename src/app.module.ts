@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { AppController } from './controllers/app.controller';
+import { AppService } from './services/app.service';
 import { Student } from './repositories/entity';
 import { StudentRepository } from './repositories/repository/student.repository';
 import { EmailExists } from './validators/services/email-exists-validation.service';

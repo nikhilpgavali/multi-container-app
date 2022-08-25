@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { StudentDtoInterface } from 'src/dtos';
+import { StudentDtoInterface } from '../../dtos';
 import { EntityManager } from 'typeorm';
 import { Student } from '../entity';
 
@@ -12,7 +12,7 @@ export class StudentRepository {
    * @return {Promise<Student>}   - returns created student
    */
   async create(studentDto: StudentDtoInterface): Promise<StudentDtoInterface> {
-    let student = new Student({
+    const student = new Student({
       first_name: studentDto.first_name,
       last_name: studentDto.last_name,
       age: studentDto.age,
@@ -21,10 +21,6 @@ export class StudentRepository {
     });
     return await this.entityManager.save(student);
   }
-  async find() {}
-  async findAll() {}
-  async delete() {}
-  async update() {}
 
   /**
    * Find By Email

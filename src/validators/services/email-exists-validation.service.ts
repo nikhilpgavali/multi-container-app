@@ -1,4 +1,4 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import {
   ValidationArguments,
   ValidatorConstraint,
@@ -12,19 +12,12 @@ import { isEmpty } from 'lodash';
 export class EmailExists implements ValidatorConstraintInterface {
   constructor(private readonly studentRepository: StudentRepository) {}
 
-  async validate(
-    value: any,
-    validationArguments?: ValidationArguments | undefined,
-  ): Promise<boolean> {
-    try {
-      let studentEmail = await this.studentRepository.findByEmail(value);
-      if (!isEmpty(studentEmail)) {
-        return false;
-      } else {
-        return true;
-      }
-    } catch (e) {
-      console.log('Error', e);
+  async validate(value: any): Promise<boolean> {
+    const studentEmail = await this.studentRepository.findByEmail(value);
+    if (!isEmpty(studentEmail)) {
+      return false;
+    } else {
+      return true;
     }
   }
   defaultMessage?(
