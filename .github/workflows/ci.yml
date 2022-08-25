@@ -23,9 +23,9 @@ jobs:
       - uses: actions/cache@v2
         with:
           path: ~/.npm
-          key: ${{ runner.os }}-14-${{ hasFiles('**/package.lock.json') }}
+          key: ${{ runner.os }}-v1-node-14-${{ hasFiles('**/package.lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-14
+            ${{ runner.os }}-v1-node-14
 
       - name: Install NPM Dependencies
         run: npm ci
