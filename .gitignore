@@ -1,6 +1,8 @@
 # compiled output
 /dist
 /node_modules
+/dbdata
+/jest-html-reporters-attach
 
 # Logs
 logs
