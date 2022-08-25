@@ -19,13 +19,7 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '14'
-
-      - uses: actions/cache@v2
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-v1-node-14-${{ hasFiles('**/package.lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-v1-node-14
+          cache: 'npm'
 
       - name: Install NPM Dependencies
         run: npm ci
