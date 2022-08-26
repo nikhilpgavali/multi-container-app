@@ -70,7 +70,7 @@ jobs:
         env:
           prNumber: ${{ fromJSON(steps.create.outputs.result).number }}
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const { prNumber } = process.env;
             github.pulls.update({
