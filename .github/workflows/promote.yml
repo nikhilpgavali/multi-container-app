@@ -49,6 +49,8 @@ jobs:
         id: auto-merge
         continue-on-error: true
         uses: octokit/graphql-action@v2.x
+        env:
+          GITHUB_TOKEN: ${{ secrets.CI_BOT_GH_TOKEN }}
         with:
           query: |
             mutation($pullid: ID!, $headline: String) {
@@ -68,6 +70,7 @@ jobs:
         env:
           prNumber: ${{ fromJSON(steps.create.outputs.result).number }}
         with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const { prNumber } = process.env;
             github.pulls.update({
