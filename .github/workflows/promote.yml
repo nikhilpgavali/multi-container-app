@@ -1,0 +1,82 @@
+name: Promote Environment
+
+on:
+  workflow_dispatch:
+    inputs:
+      env:
+        description: 'Development to perform: (develop to stage, stage to preprod, preprod to prod)'
+        required: true
+        type: choice
+        options:
+          - develop to stage
+          - stage to preprod
+          - preprod to prod
+        default: develop to stage
+
+jobs:
+  pr:
+    name: Automate PR
+    if: contains(fromJSON('["develop to stage", "stage to preprod", "preprod to prod"]'), github.event.inputs.env)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Create PR
+        id: create
+        uses: actions/github-script@v3
+        env:
+          operation: ${{ github.event.inputs.env }}
+        with:
+          script: |
+            const {operation, VERSION } = process.env;
+            const [head] = operation.split(' ');
+            const branches = ['develop','stage','preprod','master'];
+            const base = branches[branches.indexOf(head)+1];
+            const title = base === 'master'
+              ? `chore: Release v${VERSION} to production`
+              : `chore: Promote ${head} branch ${base}`
+
+            const {data: { node_id: id, number } } = await github.pulls.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title,
+              head,
+              base,
+            });
+            return { id, number, headline: `"${title} (#${number})"` };
+
+      - name: Set PR as auto-mergable # This requires auto-merge to be enabled in the repo
+        id: auto-merge
+        continue-on-error: true
+        uses: octokit/graphql-action@v2.x
+        with:
+          query: |
+            mutation($pullid: ID!, $headline: String) {
+              enablePullRequestAutoMerge(input: {
+                pullRequestId: $pullid,
+                commitHeadline: $headline
+              }) {
+                clientMutationId
+              }
+            }
+          pullid: ${{ fromJSON(steps.create.output.result).id }}
+          headline: ${{ fromJSON(steps.create.output.result ).headline }}
+
+      - name: Close PR id auto-merge setup fails
+        uses: actions/github-script@v3
+        if: steps.auto-merge.outcome == 'failure'
+        env:
+          prNumber: ${{ fromJSON(steps.create.outputs.result).number }}
+        with:
+          script: |
+            const { prNumber } = process.env;
+            github.pulls.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: parseInt(prNumber),
+              state: 'closed',
+            });
+
+      - name: Faild Job if auto-merge setup fails
+        if: steps.auto-merge.outcome == 'failure'
+        run: echo "Auto-merge could not be enabled. Aborting" && exit 1
