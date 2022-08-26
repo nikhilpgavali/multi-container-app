@@ -59,8 +59,8 @@ jobs:
                 clientMutationId
               }
             }
-          pullid: ${{ fromJSON(steps.create.output.result).id }}
-          headline: ${{ fromJSON(steps.create.output.result ).headline }}
+          pullid: ${{ fromJSON(steps.create.outputs.result).id }}
+          headline: ${{ fromJSON(steps.create.outputs.result ).headline }}
 
       - name: Close PR id auto-merge setup fails
         uses: actions/github-script@v3
