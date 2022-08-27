@@ -55,6 +55,7 @@ jobs:
       - name: Set PR as auto-mergable # This requires auto-merge to be enabled in the repo
         id: auto-merge
         continue-on-error: true
+        if: steps.create.outputs.pull-request-operation == 'created'
         uses: octokit/graphql-action@v2.x
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
