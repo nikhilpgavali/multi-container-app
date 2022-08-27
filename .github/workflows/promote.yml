@@ -50,7 +50,6 @@ jobs:
               base,
             });
             return { id, number, headline: `"${title} (#${number})"` };
-          time: '30s'
 
       - name: Set PR as auto-mergable # This requires auto-merge to be enabled in the repo
         id: auto-merge
