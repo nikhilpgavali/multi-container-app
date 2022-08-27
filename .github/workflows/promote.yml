@@ -21,11 +21,11 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      # - name: Make executeable
-      #   run: chmod +x .github/common/set-env-vars.sh
+      - name: Make executeable
+        run: chmod +x .github/common/set-env-vars.sh
 
-      # - name: Set environment variables
-      #   run: .github/common/set-env-vars.sh
+      - name: Set environment variables
+        run: .github/common/set-env-vars.sh
 
       - name: Create PR
         id: create
@@ -34,7 +34,7 @@ jobs:
           operation: ${{ github.event.inputs.env }}
         with:
           script: |
-            const {operation, VERSION } = process.env;
+            const { operation, VERSION } = process.env;
             const [head] = operation.split(' ');
             const branches = ['develop','stage','preprod','master'];
             const base = branches[branches.indexOf(head)+1];
@@ -71,21 +71,21 @@ jobs:
           pullid: ${{ steps.create.outputs.result && fromJSON(steps.create.outputs.result).id }}
           headline: ${{ steps.create.outputs.result && fromJSON(steps.create.outputs.result).headline }}
 
-      - name: Close PR id auto-merge setup fails
-        uses: actions/github-script@v3
-        env:
-          prNumber: ${{ steps.create.outputs.result && fromJSON(steps.create.outputs.result).number }}
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const { prNumber } = process.env;
-            github.pulls.update({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: parseInt(prNumber),
-              state: 'closed',
-            });
+      # - name: Close PR id auto-merge setup fails
+      #   uses: actions/github-script@v3
+      #   env:
+      #     prNumber: ${{ steps.create.outputs.result && fromJSON(steps.create.outputs.result).number }}
+      #   with:
+      #     github-token: ${{ secrets.GITHUB_TOKEN }}
+      #     script: |
+      #       const { prNumber } = process.env;
+      #       github.pulls.update({
+      #         owner: context.repo.owner,
+      #         repo: context.repo.repo,
+      #         pull_number: parseInt(prNumber),
+      #         state: 'closed',
+      #       });
 
-      - name: Faild Job if auto-merge setup fails
-        if: steps.auto-merge.outcome == 'failure'
-        run: echo "Auto-merge could not be enabled. Aborting" && exit 1
+      # - name: Faild Job if auto-merge setup fails
+      #   if: steps.auto-merge.outcome == 'failure'
+      #   run: echo "Auto-merge could not be enabled. Aborting" && exit 1
