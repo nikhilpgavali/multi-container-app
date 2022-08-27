@@ -50,7 +50,7 @@ jobs:
         continue-on-error: true
         uses: octokit/graphql-action@v2.x
         env:
-          GITHUB_TOKEN: ${{ secrets.CI_BOT_GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           query: |
             mutation($pullid: ID!, $headline: String) {
