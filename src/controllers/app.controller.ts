@@ -8,6 +8,7 @@ export class AppController {
 
   @Post('/student.create')
   async create(@Body() studentPayload: StudentDto) {
+    console.log('*****');
     return await this.appService.create(studentPayload);
   }
 }
