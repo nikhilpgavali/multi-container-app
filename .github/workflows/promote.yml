@@ -21,6 +21,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Make executeable
+        run: chmod +x .github/common/set-env-vars.sh
+
       - name: Set environment variables
         run: .github/common/set-env-vars.sh
 
