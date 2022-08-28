@@ -51,25 +51,25 @@ jobs:
             });
             return { id, number, headline: `"${title} (#${number})"` };
 
-      - name: Set PR as auto-mergable # This requires auto-merge to be enabled in the repo
-        id: auto-merge
-        continue-on-error: true
-        if: steps.create.outputs.pull-request-operation == 'created'
-        uses: octokit/graphql-action@v2.x
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          query: |
-            mutation($pullid: ID!, $headline: String) {
-              enablePullRequestAutoMerge(input: {
-                pullRequestId: $pullid,
-                commitHeadline: $headline
-              }) {
-                clientMutationId
-              }
-            }
-          pullid: ${{ steps.create.outputs.result && fromJSON(steps.create.outputs.result).id }}
-          headline: ${{ steps.create.outputs.result && fromJSON(steps.create.outputs.result).headline }}
+      # - name: Set PR as auto-mergable # This requires auto-merge to be enabled in the repo
+      #   id: auto-merge
+      #   continue-on-error: true
+      #   if: steps.create.outputs.pull-request-operation == 'created'
+      #   uses: octokit/graphql-action@v2.x
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     query: |
+      #       mutation($pullid: ID!, $headline: String) {
+      #         enablePullRequestAutoMerge(input: {
+      #           pullRequestId: $pullid,
+      #           commitHeadline: $headline
+      #         }) {
+      #           clientMutationId
+      #         }
+      #       }
+      #     pullid: ${{ steps.create.outputs.result && fromJSON(steps.create.outputs.result).id }}
+      #     headline: ${{ steps.create.outputs.result && fromJSON(steps.create.outputs.result).headline }}
 
       # - name: Close PR id auto-merge setup fails
       #   uses: actions/github-script@v3
